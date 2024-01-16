@@ -1,0 +1,66 @@
+In store.js--
+import {configureStore} from '@reduxjs/toolkit';
+export const store = configureStore({})
+
+In todoSlice.js
+import { createSlice,nanoid } from "@reduxjs/toolkit";
+
+const initialState = {
+    todos: [{id:1,text:'hello'}]
+}
+export const todoSlice= createSlice({
+    name:'todo',
+    initialState,
+    reducers:{
+        addTodo:(state,action)=>{
+            const todo = {
+                id:nanoid(),
+                text:action.payload 
+            }
+            state.todos.push(todo)
+        },
+        removeTodo:(state,action)=>{
+            state.todos = state.todos.filter((todo)=>todo.id!== action.payload)
+        }
+    }
+})
+export const {addTodo,removeTodo} = todoSlice.actions
+export default todoSlice.reducer
+
+
+in store--
+-- import reducers and add it to configureStore
+import todoReducer from '../features/todo/todoSlice'
+export const store = configureStore({
+    reducer:todoReducer
+})
+
+--create AddTodo
+--for dispatch(to add values)
+import {useDispatch} from 'react-redux'
+import { addTodo } from "../features/todo/todoSlice";
+const dispatch = useDispatch();
+const addTodoHandler =(e)=>{
+    e.preventDefault();
+    dispatch(addTodo(input));
+    setInput('');
+} 
+
+
+--create todos
+-- for useSelector(retrieve values)
+
+
+
+--in Main.jsx
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
+import './index.css'
+import { Provider } from 'react-redux'
+import { store } from './store/store.js'
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+)
